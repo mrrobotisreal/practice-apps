@@ -11,17 +11,90 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "../client/dist")));
 
 app.post('/words', (req, res) => {
-  console.log('Successfully POSTed!');
-  console.log('Reqqqd body -> ', req);
-  // TODO: add new word to glossary database
-  // db.saveWords(req.body);
-  res.send();
+  console.log('Successfully POSTed! searchyyy -> ', req.body);
+  let search = req.body.search;
+  if (search) {
+    console.log(`It's true!`);
+    let glossary = db.words.find({word: search});
+    glossary.exec((err, docs) => {
+      if (err) {
+        console.error(err);
+      } else {
+        console.log('get ressie -> ', docs);
+        res.send(docs);
+      }
+    })
+  } else {
+    db.saveWords(req.body, (err, success) => {
+      if (err) {
+        console.error(err);
+      } else {
+        let glossary = db.words.find();
+        glossary.exec((err, docs) => {
+          if (err) {
+            console.error(err);
+          } else {
+            console.log('post ressie -> ', docs);
+            res.send(docs);
+          }
+        })
+      }
+    });
+  }
 })
 
 app.get('/words', (req, res) => {
   console.log('Successfully GETted!');
-  res.send('Good job!');
+  let glossary = db.words.find();
+  glossary.exec((err, docs) => {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log('get ressie -> ', docs);
+      res.send(docs);
+    }
+  })
 });
+
+app.delete('/words', (req, res) => {
+  console.log('Successfully DELETEd!');
+  console.log('req body -> ', req.body);
+  db.deleteWord(req.body, (err, success) =>{
+    if (err) {
+      console.error(err);
+    } else {
+      let glossary = db.words.find();
+      glossary.exec((err, docs) => {
+        if (err) {
+          console.error(err);
+        } else {
+          console.log('delete ressie -> ', docs);
+          res.send(docs);
+        }
+      })
+    }
+  });
+});
+
+app.patch('/words', (req, res) => {
+  console.log('Successfully PATCHed!');
+  console.log('req body -> ', req.body);
+  db.editMeaning(req.body, (err, success) => {
+    if (err) {
+      console.error(err);
+    } else {
+      let glossary = db.words.find();
+      glossary.exec((err, docs) => {
+        if (err) {
+          console.error(err);
+        } else {
+          console.log('patch ressie -> ', docs);
+          res.send(docs);
+        }
+      })
+    }
+  });
+})
 
 app.listen(process.env.PORT);
 console.log(`Listening at http://localhost:${process.env.PORT}`);

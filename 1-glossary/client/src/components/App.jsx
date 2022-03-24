@@ -1,18 +1,9 @@
 import React from 'react';
 import Title from './Title.jsx';
 import AddWords from './AddWords.jsx';
+import Search from './Search.jsx';
 import Words from './Words.jsx';
 const axios = require('axios');
-
-// const App = () => {
-//   // do javascript here
-
-//   return (
-    // <div>
-    //   <h1 style={{textAlign: 'center', color: 'red', fontFamily: 'cursive'}}><u><b>Hello Glossary!</b></u></h1>
-    // </div>
-//   )
-// }
 
 const defaultWords = [
   {word: 'Agastopia', meaning: `admiration of a particular part of someone's body`, wordId: 53},
@@ -34,39 +25,124 @@ class App extends React.Component {
       words: defaultWords
     }
     this.addWord = this.addWord.bind(this);
+    this.search = this.search.bind(this);
+    this.refresh = this.refresh.bind(this);
+    this.deleteWord = this.deleteWord.bind(this);
+    this.editMeaning = this.editMeaning.bind(this);
   }
 
   componentDidMount() {
-    // axios({
-    //   url: '/words',
-    //   method: 'GET'
-    // })
-    // .then(res => {
-    //   this.setState({
-    //     words: res.data
-    //   })
-    // })
-    // .catch(err => {
-    //   console.log('GET err...', err);
-    // })
+    axios({
+      url: '/words',
+      method: 'GET'
+    })
+    .then(res => {
+      this.setState({
+        words: res.data
+      });
+    })
+    .catch(err => {
+      console.log('GET err...', err);
+    })
   }
 
   addWord(word, meaning) {
-    // TODO: make this function add words to the database
     axios({
       url: '/words',
       method: 'POST',
       data: {
+        search: null,
         word: word,
         meaning: meaning
       }
     })
     .then(res => {
-      console.log('Successfully POSTed!');
+      console.log('Successfully POSTed! -> data -> ', res.data);
+      this.setState({
+        words: res.data
+      });
     })
     .catch(err => {
       console.error('POST error: ', err);
     });
+  }
+
+  search(term) {
+    console.log(`Searching for ${term}`);
+    axios({
+      url: '/words',
+      method: 'POST',
+      data: {
+        search: term
+      }
+    })
+    .then(res => {
+      console.log('Successful POST search!');
+      this.setState({
+        words: res.data
+      });
+    })
+    .catch(err => {
+      console.error('POST search error: ', err);
+    })
+  }
+
+  refresh() {
+    console.log('Content has been refreshed.');
+    axios({
+      url: '/words',
+      method: 'GET'
+    })
+    .then(res => {
+      console.log('Successful refresh.');
+      this.setState({
+        words: res.data
+      });
+    })
+    .catch(err => {
+      console.error(err);
+    })
+  }
+
+  deleteWord(word) {
+    console.log(`Deleting ${word}`);
+    axios({
+      url: '/words',
+      method: 'DELETE',
+      data: {
+        word: word
+      }
+    })
+    .then(res => {
+      console.log('Successfully deleted!');
+      this.setState({
+        words: res.data
+      });
+    })
+    .catch(err => {
+      console.error('Deleting error: ', err);
+    })
+  }
+
+  editMeaning(prevMeaning, newMeaning) {
+    console.log(`Editing "${prevMeaning}" to "${newMeaning}"`);
+    axios({
+      url: '/words',
+      method: 'PATCH',
+      data: {
+        prev: prevMeaning,
+        new: newMeaning
+      }
+    })
+    .then(res => {
+      console.log(`Successfully edited ${prevMeaning}`);
+      this.setState({
+        words: res.data
+      });
+    })
+    .catch(err => {
+      console.error('Editing error: ', err);
+    })
   }
 
   render() {
@@ -74,7 +150,8 @@ class App extends React.Component {
       <React.Fragment>
       <Title />
       <AddWords addWord={this.addWord} />
-      <Words words={this.state.words} />
+      <Search search={this.search} refresh={this.refresh} />
+      <Words words={this.state.words} deleteWord={this.deleteWord} editMeaning={this.editMeaning} />
     </React.Fragment>
     )
   }

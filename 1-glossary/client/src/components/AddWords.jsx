@@ -10,10 +10,11 @@ class AddWords extends React.Component {
     this.handleChangeWord = this.handleChangeWord.bind(this);
     this.handleChangeMeaning = this.handleChangeMeaning.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.mouseEnter = this.mouseEnter.bind(this);
+    this.mouseLeave = this.mouseLeave.bind(this);
   }
 
   handleChangeWord(e) {
-    // TODO: handle incoming input, change word and meaning state
     this.setState({
       word: e.target.value,
       meaning: this.state.meaning
@@ -21,7 +22,6 @@ class AddWords extends React.Component {
   }
 
   handleChangeMeaning(e) {
-    // TODO: handle incoming input, change word and meaning state
     this.setState({
       word: this.state.word,
       meaning: e.target.value
@@ -29,7 +29,6 @@ class AddWords extends React.Component {
   }
 
   handleSubmit(e) {
-    // TODO: handle submit, send state back to App.jsx
     e.preventDefault();
     this.props.addWord(this.state.word, this.state.meaning);
     this.setState({
@@ -38,20 +37,29 @@ class AddWords extends React.Component {
     })
   }
 
+  mouseEnter(e) {
+    e.target.style.transform = 'scale(1.25)';
+  }
+
+  mouseLeave(e) {
+    e.target.style.transform = 'scale(1.0)';
+  }
+
   render() {
     return (
       <React.Fragment>
-        <form /*onSubmit={this.handleSubmit}*/>
-          <label><u><h2>New Word:</h2></u> </label>
-          <input style={{backgroundColor: 'black'}} value={this.state.word} onChange={this.handleChangeWord} />
-          <label><u><h2>Word Meaning:</h2></u> </label>
-          <input style={{backgroundColor: 'black'}} value={this.state.meaning} onChange={this.handleChangeMeaning} />
+        <div style={{border: '6px ridge red', borderRadius: '12px', padding: '2%', paddingLeft: '10%', marginTop: '5%', marginBottom: '5%',
+          marginRight: '26%', marginLeft: '2%', backgroundImage: 'linear-gradient(to right, black, red)'}}>
+          <label style={{fontFamily: 'cursive', color: 'red'}}><u><h2>New Word:</h2></u> </label>
+          <input style={{backgroundColor: 'black', border: '1px solid red'}} value={this.state.word} onChange={this.handleChangeWord} />
+          <label style={{fontFamily: 'cursive', color: 'red'}}><u><h2>Word Meaning:</h2></u> </label>
+          <input style={{backgroundColor: 'black', marginBottom: '4%', border: '1px solid red'}} value={this.state.meaning} onChange={this.handleChangeMeaning} />
           <button onClick={this.handleSubmit} style={{
-            border: '3px ridge red', backgroundColor: 'black', borderRadius: '12px', fontFamily: 'cursive', color: 'red'
-            }}>
+            border: '3px ridge red', backgroundColor: 'black', borderRadius: '12px', fontFamily: 'cursive', color: 'red',
+            transition: '.2s', marginLeft: '2%', marginBottom: '4%'}} onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}>
               <b><u>Add Word and Meaning</u></b>
           </button>
-        </form>
+        </div>
       </React.Fragment>
     )
   }

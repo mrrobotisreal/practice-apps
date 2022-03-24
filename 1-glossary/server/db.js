@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-mongoose.connect('mongodb://localhost:27017/words', {
+mongoose.connect('mongodb://localhost:27017/glossary', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
@@ -13,11 +13,11 @@ const wordSchema = new Schema({
 
 const Word = mongoose.model('Word', wordSchema);
 
-const hashlater = (str, max) => {
+const hashlator = (str, max) => {
   let hash = 0;
   for (var i = 0; i < str.length; i++) {
     hash = (hash << 5) + hash + str.charCodeAt(i);
-    hash = hash & hash; // Convert to 32bit integer
+    hash = hash & hash;
     hash = Math.abs(hash);
   }
   return hash % max;
@@ -28,7 +28,7 @@ const saveWords = (words, cb = () => {}) => {
   if (Array.isArray(words)) {
     words.forEach(word => {
       let wordEntry = new Word({
-        wordId: hashlater(word.word, words.length ** 2),
+        wordId: hashlator(word.word, words.length ** 2),
         word: word.word,
         meaning: word.meaning
       });
@@ -44,26 +44,52 @@ const saveWords = (words, cb = () => {}) => {
     })
   } else {
     let wordEntry = new Word({
-      wordId: hashlater(word.meaning, 10000),
-      word: word.word,
-      meaning: word.meaning
+      wordId: hashlator(words.meaning, 10000),
+      word: words.word,
+      meaning: words.meaning
     });
-    Word.findOneAndDelete({wordId: word.wordId}, (err, success) => {
+    Word.findOneAndDelete({wordId: hashlator(words.meaning, 10000)}, (err, success) => {
       if (err) {
         console.error('database error: ', err);
       } else {
         console.log('database success: ', success)
       }
     });
-    wordEntry.save();
-    cb();
+    wordEntry.save((err, success) => {
+      if (err) {
+        console.error(err);
+      } else {
+        console.log('Great success!!!! ', success);
+        cb(null, success);
+      }
+    });
+
   }
 };
 
-module.exports.word = Word;
-module.exports.saveWords = saveWords;
+const deleteWord = (word, cb = () => {}) => {
+  Word.findOneAndDelete({word: word.word}, (err, success) => {
+    if (err) {
+      console.error('Db Delete error: ', err);
+    } else {
+      console.log('Db Delete success!');
+      cb(null, success);
+    }
+  });
+}
 
-// 1. Use mongoose to establish a connection to MongoDB
-// 2. Set up any schema and models needed by the app
-// 3. Export the models
-// 4. Import the models into any modules that need them
+const editMeaning = (word, cb = () => {}) => {
+  Word.findOneAndUpdate({meaning: word.prev}, {meaning: word.new}, {new: true}, (err, success) => {
+    if (err) {
+      console.error('Db edit error: ', err);
+    } else {
+      console.log('Db edit success!');
+      cb(null, success);
+    }
+  });
+}
+
+module.exports.words = Word;
+module.exports.saveWords = saveWords;
+module.exports.deleteWord = deleteWord;
+module.exports.editMeaning = editMeaning;
