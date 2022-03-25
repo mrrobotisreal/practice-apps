@@ -21,4 +21,8 @@ db.connectAsync()
   )
   .catch((err) => console.log(err));
 
+const save = (data, cb = () => {}) => {
+  db.query()
+}
+
 module.exports = db;

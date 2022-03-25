@@ -29,6 +29,7 @@ class App extends React.Component {
     this.refresh = this.refresh.bind(this);
     this.deleteWord = this.deleteWord.bind(this);
     this.editMeaning = this.editMeaning.bind(this);
+    this.flashCard = this.flashCard.bind(this);
   }
 
   componentDidMount() {
@@ -145,14 +146,19 @@ class App extends React.Component {
     })
   }
 
+  flashCard(mode) {
+    // toggle meanings displayed on and off
+    console.log(`Flashcard mode toggled to ${mode}.`);
+  }
+
   render() {
     return (
       <React.Fragment>
-      <Title />
-      <AddWords addWord={this.addWord} />
-      <Search search={this.search} refresh={this.refresh} />
-      <Words words={this.state.words} deleteWord={this.deleteWord} editMeaning={this.editMeaning} />
-    </React.Fragment>
+        <Title />
+        <AddWords addWord={this.addWord} />
+        <Search search={this.search} refresh={this.refresh} flashCard={this.flashCard} />
+        <Words words={this.state.words} deleteWord={this.deleteWord} editMeaning={this.editMeaning} />
+      </React.Fragment>
     )
   }
 }

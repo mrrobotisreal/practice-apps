@@ -4,11 +4,14 @@ class Search extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      query: ''
+      query: '',
+      flashCard: false,
+      mode: 'red'
     }
     this.onChange = this.onChange.bind(this);
     this.query = this.query.bind(this);
     this.refresh = this.refresh.bind(this);
+    this.flashCard = this.flashCard.bind(this);
     this.mouseEnter = this.mouseEnter.bind(this);
     this.mouseLeave = this.mouseLeave.bind(this);
   }
@@ -17,6 +20,13 @@ class Search extends React.Component {
     this.setState({
       query: e.target.value
     });
+    setTimeout(() => {
+      if (this.state.query !== '') {
+        this.props.search(this.state.query);
+      } else {
+        this.refresh();
+      }
+    }, 50);
   }
 
   query(e) {
@@ -28,8 +38,29 @@ class Search extends React.Component {
   }
 
   refresh(e) {
-    e.preventDefault();
     this.props.refresh();
+  }
+
+  flashCard(e) {
+    if (!this.state.flashCard) {
+      this.setState({
+        query: this.state.query,
+        flashCard: true,
+        mode: 'green'
+      });
+      setTimeout(() => {
+        this.props.flashCard(this.state.flashCard);
+      }, 50);
+    } else {
+      this.setState({
+        query: this.state.query,
+        flashCard: false,
+        mode: 'red'
+      });
+      setTimeout(() => {
+        this.props.flashCard(this.state.flashCard);
+      }, 50);
+    }
   }
 
   mouseEnter(e) {
@@ -57,6 +88,12 @@ class Search extends React.Component {
             transition: '.2s', marginLeft: '2%', marginBottom: '4%'}} onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}
             onClick={this.refresh}>
               <b><u>Refresh</u></b>
+        </button>
+        <button style={{
+            border: '3px ridge red', backgroundColor: 'black', borderRadius: '12px', fontFamily: 'cursive', color: this.state.mode,
+            transition: '.2s', marginLeft: '2%', marginBottom: '4%'}} onMouseEnter={this.mouseEnter} onMouseLeave={this.mouseLeave}
+            onClick={this.flashCard} value={this.state.flashCard}>
+              <b><u>FlashCard Mode</u></b>
         </button>
       </div>
     )

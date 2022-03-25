@@ -15,7 +15,7 @@ app.post('/words', (req, res) => {
   let search = req.body.search;
   if (search) {
     console.log(`It's true!`);
-    let glossary = db.words.find({word: search});
+    let glossary = db.words.find({word: {$regex: search, $options: 'i'}}).sort({word: -1});
     glossary.exec((err, docs) => {
       if (err) {
         console.error(err);
@@ -29,7 +29,7 @@ app.post('/words', (req, res) => {
       if (err) {
         console.error(err);
       } else {
-        let glossary = db.words.find();
+        let glossary = db.words.find().sort({word: -1});
         glossary.exec((err, docs) => {
           if (err) {
             console.error(err);
@@ -45,7 +45,7 @@ app.post('/words', (req, res) => {
 
 app.get('/words', (req, res) => {
   console.log('Successfully GETted!');
-  let glossary = db.words.find();
+  let glossary = db.words.find().sort({word: -1});
   glossary.exec((err, docs) => {
     if (err) {
       console.error(err);
@@ -63,7 +63,7 @@ app.delete('/words', (req, res) => {
     if (err) {
       console.error(err);
     } else {
-      let glossary = db.words.find();
+      let glossary = db.words.find().sort({word: -1});
       glossary.exec((err, docs) => {
         if (err) {
           console.error(err);
@@ -83,7 +83,7 @@ app.patch('/words', (req, res) => {
     if (err) {
       console.error(err);
     } else {
-      let glossary = db.words.find();
+      let glossary = db.words.find().sort({word: -1});
       glossary.exec((err, docs) => {
         if (err) {
           console.error(err);
