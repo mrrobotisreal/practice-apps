@@ -23,10 +23,15 @@ app.use(logger);
 app.use(express.static(path.join(__dirname, "../client/dist")));
 
 app.post('/formone', (req, res) => {
-  let name = req.body.name;
-  let email = req.body.email;
-  let password = req.body.password;
+  console.log('reqqed post -> ', req.body);
+  db.saveOne(req.body);
+  res.send();
+});
 
+app.post('/formtwo', (req, res) => {
+  console.log('reqqed post -> ', req.body);
+  db.saveTwo(req.body);
+  res.send();
 });
 
 app.listen(process.env.PORT);

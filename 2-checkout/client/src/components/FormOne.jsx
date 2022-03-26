@@ -6,7 +6,8 @@ class FormOne extends React.Component {
     this.state = {
       name: '',
       email: '',
-      password: ''
+      password: '',
+      hidden: []
     }
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleEmailChange = this.handleEmailChange.bind(this);
@@ -18,7 +19,8 @@ class FormOne extends React.Component {
     this.setState({
       name: e.target.value,
       email: this.state.email,
-      password: this.state.password
+      password: this.state.password,
+      hidden: this.state.hidden
     });
   }
 
@@ -26,7 +28,8 @@ class FormOne extends React.Component {
     this.setState({
       name: this.state.name,
       email: e.target.value,
-      password: this.state.password
+      password: this.state.password,
+      hidden: this.state.hidden
     });
   }
 
@@ -34,14 +37,16 @@ class FormOne extends React.Component {
     this.setState({
       name: this.state.name,
       email: this.state.email,
-      password: e.target.value
+      password: e.target.value,
+      hidden: [].fill('*', 0, this.state.password.length)
     });
   }
 
   next(e) {
     e.preventDefault();
     console.log('Form One complete! On to Form Two.');
-    this.props.nextOne(this.state.name, this.state.email, this.state.password);
+    // this.props.nextOne(this.state.name, this.state.email, this.state.password);
+    this.props.addStateOne(this.state.name, this.state.email, this.state.password);
     this.setState({
       name: '',
       email: '',
