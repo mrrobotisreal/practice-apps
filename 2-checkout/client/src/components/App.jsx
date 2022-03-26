@@ -13,6 +13,7 @@ class App extends React.Component {
     }
     this.nextOne = this.nextOne.bind(this);
     this.nextTwo = this.nextTwo.bind(this);
+    this.nextThree = this.nextThree.bind(this);
   }
 
   nextOne(name, email, password) {
@@ -73,11 +74,32 @@ class App extends React.Component {
     })
   }
 
+  nextThree(card, expiry, cvv, billingZip) {
+    console.log('Next three');
+    axios({
+      url: '/formthree',
+      method: 'POST',
+      data: {
+        form: 'formThree',
+        card: card,
+        expiry: expiry,
+        cvv: cvv,
+        billingZip: billingZip
+      }
+    })
+    .then(res => {
+      console.log('Next three success -> ', res);
+    })
+    .catch(err => {
+      console.error(err);
+    })
+  }
+
   render() {
     return (
       <React.Fragment>
         <Title />
-        <Forms nextOne={this.nextOne} nextTwo={this.nextTwo} />
+        <Forms nextOne={this.nextOne} nextTwo={this.nextTwo} nextThree={this.nextThree} />
       </React.Fragment>
     )
   }

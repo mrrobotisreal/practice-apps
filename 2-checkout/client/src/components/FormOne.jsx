@@ -44,7 +44,7 @@ class FormOne extends React.Component {
 
   next(e) {
     e.preventDefault();
-    console.log('Form One complete! On to Form Two.');
+    // console.log('Form One complete! On to Form Two.');
     // this.props.nextOne(this.state.name, this.state.email, this.state.password);
     this.props.addStateOne(this.state.name, this.state.email, this.state.password);
     this.setState({

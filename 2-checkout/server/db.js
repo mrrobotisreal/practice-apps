@@ -43,6 +43,11 @@ const saveOne = (data, cb = () => {}) => {
       `INSERT INTO ${data.form} (name, email, password) VALUES (?, ?, ?)`, [data.name, data.email, password]
     )
   )
+  .then(() => {
+    db.queryAsync(
+      `INSERT INTO formThree (formOne) VALUES ((SELECT id FROM formOne WHERE password = ?))`, [password]
+    )
+  })
   .catch((err) => console.log(err));
 }
 
@@ -54,9 +59,28 @@ const saveTwo = (data, cb = () => {}) => {
       `INSERT INTO ${data.form} (addressLineOne, addressLineTwo, city, state, zip, phone) VALUES (?, ?, ?, ?, ?, ?)`, [data.add1, data.add2, data.city, data.state, data.zip, data.phone]
     )
   )
+  .then(() => {
+    `INSERT INTO formThree (formTwo) VALUES ((SELECT id FROM formTwo WHERE addressLineOne = ?))`, [data.add1]
+  })
   .catch((err) => console.log(err));
+}
+
+const saveThree = (data, cb = () => {}) => {
+  db.connectAsync()
+  .then(() => {
+    db.queryAsync(
+      `INSERT INTO ${data.form} (card, expiry, cvv, billingZip) VALUES (?, ?, ?, ?)`, [data.card, data.expiry, data.cvv, data.billingZip]
+    )
+  })
+  .then((res) => {
+    cb(null, res);
+  })
+  .catch(err => {
+    console.error(err);
+  })
 }
 
 module.exports = db;
 module.exports.saveOne = saveOne;
 module.exports.saveTwo = saveTwo;
+module.exports.saveThree = saveThree;

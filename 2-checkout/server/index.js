@@ -34,5 +34,18 @@ app.post('/formtwo', (req, res) => {
   res.send();
 });
 
+app.post('/formthree', (req, res) => {
+  console.log(`Reqqed POST -> ${req.body}`);
+  // TODO: finish this function
+  db.saveThree(req.body, (err, results) => {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log(`Results -> ${results}`);
+      res.send(results);
+    }
+  });
+});
+
 app.listen(process.env.PORT);
 console.log(`Listening at http://localhost:${process.env.PORT}`);

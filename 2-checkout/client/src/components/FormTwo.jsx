@@ -88,7 +88,7 @@ class FormTwo extends React.Component {
 
   next(e) {
     e.preventDefault();
-    console.log('Form Two complete! On to Form Three.');
+    // console.log('Form Two complete! On to Form Three.');
     this.props.addStateTwo(this.state.addressLineOne, this.state.addressLineTwo, this.state.city, this.state.state, this.state.zip, this.state.phone);
     this.setState({
       addressLineOne: '',

@@ -1,7 +1,7 @@
 import React from 'react';
 import FormOne from './FormOne.jsx';
 import FormTwo from './FormTwo.jsx';
-// import FormThree from './FormThree.jsx';
+import FormThree from './FormThree.jsx';
 
 class Forms extends React.Component {
   constructor(props) {
@@ -18,12 +18,12 @@ class Forms extends React.Component {
       addressLineTwo: '',
       city: '',
       state: '',
-      zip: 0,
+      zip: '',
       phone: '',
       card: '',
       expiry: '',
-      cvv: 0,
-      billingZip: 0
+      cvv: '',
+      billingZip: ''
     }
     this.addStateOne = this.addStateOne.bind(this);
     this.addStateTwo = this.addStateTwo.bind(this);
@@ -105,7 +105,7 @@ class Forms extends React.Component {
       billingZip: billingZip
     });
     setTimeout(() => {
-      this.showTwo();
+      this.submit();
     }, 50);
   }
 
@@ -115,7 +115,7 @@ class Forms extends React.Component {
 
   showTwo(e) {
     // e.preventDefault();
-    console.log('Form One complete! On to Form Two.');
+    // console.log('Form One complete! On to Form Two.');
     this.props.nextOne(this.state.name, this.state.email, this.state.password);
     this.setState({
       displayOne: 'none',
@@ -140,12 +140,12 @@ class Forms extends React.Component {
 
   showThree(e) {
     // display form three, hide the rest
-    console.log('Form One complete! On to Form Two.');
+    // console.log('Form One complete! On to Form Two.');
     this.props.nextTwo(this.state.addressLineOne, this.state.addressLineTwo, this.state.city, this.state.state, this.state.zip, this.state.phone);
     this.setState({
-      displayOne: 'none',
-      displayTwo: 'contents',
-      displayThree: this.state.displayThree,
+      displayOne: this.state.displayOne,
+      displayTwo: 'none',
+      displayThree: 'contents',
       confirm: this.state.confirm,
       name: this.state.name,
       email: this.state.email,
@@ -165,6 +165,27 @@ class Forms extends React.Component {
 
   submit(e) {
     // submit form 3, the final form, and display thank you page
+    console.log('Form 3 complete! Yay!');
+    this.props.nextThree(this.state.card, this.state.expiry, this.state.cvv, this.state.billingZip);
+    this.setState({
+      displayOne: this.state.displayOne,
+      displayTwo: this.state.displayTwo,
+      displayThree: 'contents',
+      confirm: this.state.confirm, /* need to display this next */
+      name: '',
+      email: '',
+      password: '',
+      addressLineOne: '',
+      addressLineTwo: '',
+      city: '',
+      state: '',
+      zip: '',
+      phone: '',
+      card: '',
+      expiry: '',
+      cvv: '',
+      billingZip: ''
+    });
   }
 
   render(props) {
@@ -174,12 +195,12 @@ class Forms extends React.Component {
           <FormOne nextOne={this.props.nextOne} addStateOne={this.addStateOne} />
         </div>
         <div style={{display: this.state.displayTwo}}>
-          <FormTwo addStateTwo={this.addStateTwo} />
-        </div>
-        {/* <div style={{display: this.state.displayThree}}>
-          <FormThree />
+          <FormTwo nextTwo={this.props.nextTwo} addStateTwo={this.addStateTwo} />
         </div>
         <div style={{display: this.state.displayThree}}>
+          <FormThree nextThree={this.props.nextThree} addStateThree={this.addStateThree} />
+        </div>
+        {/* <div style={{display: this.state.displayThree}}>
           <Confirm />
         </div> */}
       </div>
